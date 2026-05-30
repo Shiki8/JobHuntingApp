@@ -20,6 +20,7 @@ import { type Criteria } from '../types';
 import { useCriteriaStore } from '../store/useCriteriaStore';
 import { useScoreStore } from '../store/useScoreStore';
 import { Button, ConfirmModal, EmptyState } from '../components/ui';
+import { useDocumentTitle } from '../lib/useDocumentTitle';
 
 // ── Sortable row ──────────────────────────────────────────────────────────────
 
@@ -125,6 +126,7 @@ export default function CriteriaSettings() {
   const [deleteTarget, setDeleteTarget] = useState<Criteria | null>(null);
   const [scoreCount, setScoreCount] = useState(0);
 
+  useDocumentTitle('評価軸');
   const sorted = [...criteria].sort((a, b) => a.order - b.order);
 
   const sensors = useSensors(

@@ -1,10 +1,11 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useRef, useEffect } from 'react';
 import { Search, SlidersHorizontal, Briefcase } from 'lucide-react';
 import { APPLICATION_STATUSES, type ApplicationStatus, JOB_SOURCES, type RemoteType } from '../types';
 import { useJobStore } from '../store/useJobStore';
 import { JobCard } from '../components/JobCard';
 import { CompareBar } from '../components/CompareBar';
 import { Button, CountBadge, EmptyState, Select } from '../components/ui';
+import { useDocumentTitle } from '../lib/useDocumentTitle';
 
 const REMOTE_OPTIONS: { value: string; label: string }[] = [
   { value: '', label: 'すべて' },
@@ -24,6 +25,20 @@ export default function JobList() {
   const navigate = useNavigate();
   const { jobs, filters, setFilters, filteredJobs } = useJobStore();
   const displayed = filteredJobs();
+  const searchRef = useRef<HTMLInputElement>(null);
+  useDocumentTitle('求人一覧');
+
+  // `/` キーで検索フォーカス
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === '/' && document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        searchRef.current?.focus();
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, []);
 
   const countByStatus = (status: ApplicationStatus) =>
     jobs.filter((j) => j.status === status).length;
@@ -44,11 +59,12 @@ export default function JobList() {
               className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
             />
             <input
+              ref={searchRef}
               type="text"
               value={filters.search}
               onChange={(e) => setFilters({ search: e.target.value })}
-              placeholder="企業名・職種・技術で検索"
-              className="pl-8 pr-3 py-2 text-sm border border-gray-200 rounded-lg w-56 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-colors"
+              placeholder="企業名・職種・技術で検索 [/]"
+              className="pl-8 pr-3 py-2 text-sm border border-gray-200 rounded-lg w-64 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-colors"
             />
           </div>
           {/* Source filter */}
