@@ -8,6 +8,7 @@ import {
 import { useJobStore } from '../store/useJobStore';
 import { nanoid } from '../lib/nanoid';
 import { Button, Input, Textarea, Select, TagInput } from '../components/ui';
+import { useDocumentTitle } from '../lib/useDocumentTitle';
 
 const REMOTE_OPTIONS = (['不可', '一部リモート', 'フルリモート'] as RemoteType[]).map(
   (v) => ({ value: v, label: v })
@@ -35,6 +36,7 @@ export default function JobForm() {
 
   const [form, setForm] = useState<Omit<Job, 'id' | 'createdAt' | 'updatedAt'>>(EMPTY_JOB);
   const [errors, setErrors] = useState<Partial<Record<keyof Job, string>>>({});
+  useDocumentTitle(isEdit ? '求人を編集' : '求人を追加');
 
   useEffect(() => {
     if (isEdit) {

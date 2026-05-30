@@ -6,6 +6,7 @@ import { useJobStore } from '../store/useJobStore';
 import { useCriteriaStore } from '../store/useCriteriaStore';
 import { useScoreStore } from '../store/useScoreStore';
 import { Button, ScoreDots, StatusBadge } from '../components/ui';
+import { useDocumentTitle } from '../lib/useDocumentTitle';
 
 // ドラフト状態（保存前のローカル編集）
 interface Draft {
@@ -117,6 +118,7 @@ export default function ScoreInput() {
   });
 
   const [saved, setSaved] = useState(false);
+  useDocumentTitle(job ? `評価入力 — ${job.companyName}` : '評価入力');
 
   // 評価軸が後から追加された場合に対応
   useEffect(() => {

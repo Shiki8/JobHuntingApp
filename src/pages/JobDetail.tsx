@@ -8,6 +8,7 @@ import { useCriteriaStore } from '../store/useCriteriaStore';
 import {
   StatusBadge, Button, ConfirmModal, ScoreWithLabel, Tag,
 } from '../components/ui';
+import { useDocumentTitle } from '../lib/useDocumentTitle';
 
 export default function JobDetail() {
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ export default function JobDetail() {
   const { criteria } = useCriteriaStore();
   const { getScore, getScoresByJob, deleteScoresByJob, weightedTotal } = useScoreStore();
   const [confirmDelete, setConfirmDelete] = useState(false);
+  useDocumentTitle(job?.companyName);
 
   const job = jobs.find((j) => j.id === id);
   if (!job) {
