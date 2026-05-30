@@ -1,4 +1,5 @@
-import { useNavigate, useRef, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Search, SlidersHorizontal, Briefcase } from 'lucide-react';
 import { APPLICATION_STATUSES, type ApplicationStatus, JOB_SOURCES, type RemoteType } from '../types';
 import { useJobStore } from '../store/useJobStore';

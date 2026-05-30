@@ -17,9 +17,9 @@ export default function JobDetail() {
   const { criteria } = useCriteriaStore();
   const { getScore, getScoresByJob, deleteScoresByJob, weightedTotal } = useScoreStore();
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const job = jobs.find((j) => j.id === id);
   useDocumentTitle(job?.companyName);
 
-  const job = jobs.find((j) => j.id === id);
   if (!job) {
     return (
       <div className="flex items-center justify-center h-full text-gray-400">
