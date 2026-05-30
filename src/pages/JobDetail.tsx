@@ -220,7 +220,7 @@ export default function JobDetail() {
               <Button
                 variant="secondary"
                 size="sm"
-                onClick={() => navigate(`/jobs/${job.id}/edit`)}
+                onClick={() => navigate(`/jobs/${job.id}/score`)}
               >
                 評価を入力する
               </Button>
