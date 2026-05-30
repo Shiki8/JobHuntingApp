@@ -17,6 +17,20 @@ export const APPLICATION_STATUSES: ApplicationStatus[] = [
   '見送り',
 ];
 
+export type JobSource =
+  | 'Wantedly'
+  | 'Green'
+  | 'doda'
+  | 'LinkedIn'
+  | 'Findy'
+  | '企業サイト'
+  | 'エージェント'
+  | 'その他';
+
+export const JOB_SOURCES: JobSource[] = [
+  'Wantedly', 'Green', 'doda', 'LinkedIn', 'Findy', '企業サイト', 'エージェント', 'その他',
+];
+
 export type RemoteType = '不可' | '一部リモート' | 'フルリモート';
 export type EmploymentType = '正社員' | '契約社員' | '業務委託' | 'その他';
 
@@ -24,7 +38,8 @@ export interface Job {
   id: string;
   companyName: string;
   position: string;
-  source: string;
+  source: JobSource;
+  sourceNote: string; // source='その他' のときの自由入力
   url: string;
   salaryMin: number | null;
   salaryMax: number | null;
@@ -32,7 +47,7 @@ export interface Job {
   remoteType: RemoteType;
   employmentType: EmploymentType;
   yearEndHolidays: number | null;
-  startTime: string;
+  workStartTime: string; // 始業時間 例: "9:00" "フレックス"
   housingAllowance: boolean;
   annualBonus: number | null;
   requiredSkills: string[];
