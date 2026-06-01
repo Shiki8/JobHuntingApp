@@ -48,7 +48,10 @@ export function normalizeJobImport(imported: JobImport): Partial<Job> {
 
   if (imported.companyName !== undefined) result.companyName = imported.companyName
   if (imported.position !== undefined) result.position = imported.position
-  if (imported.url !== undefined) result.url = imported.url
+  if (imported.url !== undefined) {
+    const mdMatch = imported.url.match(/^\[.*?\]\((.*?)\)$/)
+    result.url = mdMatch ? mdMatch[1] : imported.url
+  }
   if (imported.location !== undefined) result.location = imported.location
   if (imported.workStartTime !== undefined) result.workStartTime = imported.workStartTime
   if (imported.summary !== undefined) result.summary = imported.summary
