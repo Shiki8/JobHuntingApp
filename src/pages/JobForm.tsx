@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, Braces } from 'lucide-react';
 import {
   type Job, type ApplicationStatus, type RemoteType, type EmploymentType, type JobSource,
   APPLICATION_STATUSES, JOB_SOURCES,
@@ -8,6 +8,7 @@ import {
 import { useJobStore } from '../store/useJobStore';
 import { nanoid } from '../lib/nanoid';
 import { Button, Input, Textarea, Select, TagInput } from '../components/ui';
+import { JobImportModal } from '../components/JobImportModal';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 
 const REMOTE_OPTIONS = (['不可', '一部リモート', 'フルリモート'] as RemoteType[]).map(
@@ -36,6 +37,7 @@ export default function JobForm() {
 
   const [form, setForm] = useState<Omit<Job, 'id' | 'createdAt' | 'updatedAt'>>(EMPTY_JOB);
   const [errors, setErrors] = useState<Partial<Record<keyof Job, string>>>({});
+  const [importOpen, setImportOpen] = useState(false);
   useDocumentTitle(isEdit ? '求人を編集' : '求人を追加');
 
   useEffect(() => {
@@ -74,17 +76,34 @@ export default function JobForm() {
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="flex items-center gap-3 px-8 py-5 border-b border-gray-100 bg-white shrink-0">
-        <button
-          onClick={() => navigate(-1)}
-          className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+      <div className="flex items-center justify-between px-8 py-5 border-b border-gray-100 bg-white shrink-0">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => navigate(-1)}
+            className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+          >
+            <ChevronLeft size={20} />
+          </button>
+          <h1 className="text-lg font-semibold text-gray-900">
+            {isEdit ? '求人を編集' : '求人を追加'}
+          </h1>
+        </div>
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          icon={<Braces size={14} />}
+          onClick={() => setImportOpen(true)}
         >
-          <ChevronLeft size={20} />
-        </button>
-        <h1 className="text-lg font-semibold text-gray-900">
-          {isEdit ? '求人を編集' : '求人を追加'}
-        </h1>
+          JSON から入力
+        </Button>
       </div>
+
+      <JobImportModal
+        open={importOpen}
+        onClose={() => setImportOpen(false)}
+        onImport={(data) => setForm((f) => ({ ...f, ...data }))}
+      />
 
       {/* Form */}
       <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto">
