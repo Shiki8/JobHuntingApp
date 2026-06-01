@@ -89,4 +89,14 @@ describe('normalizeJobImport', () => {
     expect(result.position).toBeUndefined()
     expect(result.source).toBeUndefined()
   })
+
+  it('url が Markdown リンク形式の場合、URL 部分のみ抽出される', () => {
+    const result = normalizeJobImport({ url: '[求人詳細](https://example.com/jobs/123)' })
+    expect(result.url).toBe('https://example.com/jobs/123')
+  })
+
+  it('url が通常の文字列の場合はそのまま返る', () => {
+    const result = normalizeJobImport({ url: 'https://example.com/jobs/123' })
+    expect(result.url).toBe('https://example.com/jobs/123')
+  })
 })

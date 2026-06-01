@@ -6,5 +6,6 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   test: {
     environment: 'node',
+    exclude: ['e2e/**', 'node_modules/**'],
   },
 })
