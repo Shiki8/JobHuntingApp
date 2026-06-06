@@ -1,4 +1,4 @@
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { LayoutList, GitCompareArrows, SlidersHorizontal, Settings, Plus } from 'lucide-react';
 import { useEffect } from 'react';
 import { useCriteriaStore } from '../store/useCriteriaStore';
@@ -12,16 +12,21 @@ const NAV_ITEMS = [
 
 export default function Layout() {
   const navigate = useNavigate();
+  const location = useLocation();
   const initDefaults = useCriteriaStore((s) => s.initDefaults);
 
   useEffect(() => {
     initDefaults();
   }, [initDefaults]);
 
+  const isFormRoute =
+    location.pathname === '/jobs/new' ||
+    /^\/jobs\/[^/]+\/edit$/.test(location.pathname);
+
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden">
-      {/* Sidebar */}
-      <aside className="w-60 shrink-0 flex flex-col bg-white border-r border-gray-200">
+      {/* Sidebar (desktop only) */}
+      <aside className="hidden md:flex w-60 shrink-0 flex-col bg-white border-r border-gray-200">
         {/* Logo */}
         <div className="flex items-center gap-2.5 px-5 py-6 border-b border-gray-100">
           <div className="w-7 h-7 rounded-full bg-blue-600 shrink-0" />
@@ -63,9 +68,49 @@ export default function Layout() {
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
+      <main className="flex-1 flex flex-col min-w-0 overflow-hidden pb-[83px] md:pb-0">
         <Outlet />
       </main>
+
+      {/* Bottom tab bar (mobile only) */}
+      <nav
+        aria-label="ボトムナビゲーション"
+        className="fixed bottom-0 left-0 right-0 h-[83px] bg-white border-t border-gray-200 flex items-start md:hidden z-50"
+      >
+        <div className="flex w-full pt-2">
+          {NAV_ITEMS.map(({ to, label, icon: Icon, end }) => (
+            <NavLink
+              key={to}
+              to={to}
+              end={end}
+              className={({ isActive }) =>
+                [
+                  'flex-1 flex flex-col items-center gap-0.5 py-1 text-xs font-medium transition-colors',
+                  isActive ? 'text-blue-600' : 'text-gray-400',
+                ].join(' ')
+              }
+            >
+              {({ isActive }) => (
+                <>
+                  <Icon size={22} strokeWidth={isActive ? 2 : 1.75} />
+                  <span>{label}</span>
+                </>
+              )}
+            </NavLink>
+          ))}
+        </div>
+      </nav>
+
+      {/* FAB: 求人を追加（モバイルのみ・フォームルートでは非表示） */}
+      {!isFormRoute && (
+        <button
+          aria-label="求人を追加"
+          onClick={() => navigate('/jobs/new')}
+          className="fixed bottom-[95px] right-4 w-14 h-14 rounded-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center shadow-lg md:hidden z-50 transition-colors"
+        >
+          <Plus size={24} strokeWidth={2.5} />
+        </button>
+      )}
     </div>
   );
 }

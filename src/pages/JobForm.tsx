@@ -106,7 +106,7 @@ export default function JobForm() {
       />
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto">
+      <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto" noValidate>
         <div className="max-w-2xl mx-auto px-8 py-8 flex flex-col gap-8">
 
           {/* Section: 基本情報 */}
@@ -126,7 +126,7 @@ export default function JobForm() {
               error={errors.position}
               placeholder="例：フロントエンドエンジニア"
             />
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <div className="flex-1">
                 <Select
                   label="媒体"
@@ -158,7 +158,7 @@ export default function JobForm() {
           {/* Section: 条件 */}
           <section className="flex flex-col gap-4">
             <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">条件</h2>
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <Input
                 label="年収下限（万円）"
                 type="number"
@@ -174,7 +174,7 @@ export default function JobForm() {
                 placeholder="例：900"
               />
             </div>
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <div className="flex-1">
                 <Input
                   label="勤務地"
@@ -192,7 +192,7 @@ export default function JobForm() {
                 />
               </div>
             </div>
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <div className="flex-1">
                 <Select
                   label="雇用形態"
@@ -210,7 +210,7 @@ export default function JobForm() {
                 />
               </div>
             </div>
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <div className="flex-1">
                 <Input
                   label="年末年始休暇（日）"
@@ -298,7 +298,7 @@ export default function JobForm() {
               onChange={(e) => set('status', e.target.value as ApplicationStatus)}
               options={STATUS_OPTIONS}
             />
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <Input
                 label="応募日"
                 type="date"

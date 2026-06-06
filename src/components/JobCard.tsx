@@ -106,7 +106,13 @@ export function JobCard({ job }: JobCardProps) {
         ) : (
           <span className="text-xs text-gray-300">評価未入力</span>
         )}
-        <div className="ml-auto" onClick={handleCheck}>
+        <div
+          className="ml-auto"
+          role="checkbox"
+          aria-checked={selected}
+          aria-label="比較に追加"
+          onClick={handleCheck}
+        >
           <div
             className={[
               'w-5 h-5 rounded border-2 flex items-center justify-center transition-colors shrink-0',
