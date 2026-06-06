@@ -213,7 +213,83 @@ export default function Compare() {
           }
         />
       ) : (
-        <div className="flex flex-1 overflow-hidden">
+        <>
+        {/* ══ モバイル：転置テーブル（行=求人・列=評価軸） ══ */}
+        <div data-testid="compare-mobile" className="md:hidden flex-1 overflow-x-auto overflow-y-auto">
+          <table className="border-collapse text-sm w-full">
+            <thead>
+              <tr className="bg-gray-50">
+                <th className="sticky left-0 z-10 bg-gray-50 px-3 py-2 text-left text-xs font-semibold text-gray-500 border-b border-r border-gray-200 min-w-[120px]">
+                  求人 / 合致度
+                </th>
+                {sortedCriteria.map((c) => (
+                  <th
+                    key={c.id}
+                    className="px-3 py-2 text-center text-xs font-medium text-gray-500 border-b border-r border-gray-200 min-w-[80px] whitespace-nowrap"
+                  >
+                    {c.name}
+                    {c.weight === 0 && (
+                      <span className="block text-[10px] text-gray-400">参考</span>
+                    )}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {selectedJobs.map((job, rowIdx) => {
+                const jobScore = scores[rowIdx];
+                const isTop = jobScore !== null && jobScore === maxScore;
+                return (
+                  <tr
+                    key={job.id}
+                    className={isTop ? 'bg-blue-50/30' : 'bg-white'}
+                  >
+                    {/* 左列固定：求人名・合致度 */}
+                    <td className="sticky left-0 z-10 bg-inherit px-3 py-3 border-b border-r border-gray-200 min-w-[120px]">
+                      <p className="font-semibold text-gray-900 text-xs leading-snug line-clamp-2">
+                        {job.companyName}
+                      </p>
+                      <p className="text-[10px] text-gray-500 mt-0.5 line-clamp-1">{job.position}</p>
+                      {jobScore !== null && (
+                        <span
+                          className={[
+                            'inline-block mt-1.5 text-[10px] font-bold px-1.5 py-0.5 rounded-full',
+                            isTop
+                              ? 'bg-blue-600 text-white'
+                              : 'bg-gray-100 text-gray-600',
+                          ].join(' ')}
+                        >
+                          {jobScore}%
+                        </span>
+                      )}
+                    </td>
+                    {/* 評価軸スコアセル */}
+                    {sortedCriteria.map((c) => {
+                      const sc = getScore(job.id, c.id);
+                      return (
+                        <td
+                          key={c.id}
+                          className="px-3 py-3 text-center border-b border-r border-gray-200 min-w-[80px]"
+                        >
+                          {sc ? (
+                            <span className="text-sm font-semibold text-gray-700">
+                              {sc.score}
+                            </span>
+                          ) : (
+                            <span className="text-sm text-gray-300 font-medium">—</span>
+                          )}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+
+        {/* ══ デスクトップ：固定左列（軸名）＋横スクロール求人列 ══ */}
+        <div className="hidden md:flex flex-1 overflow-hidden">
           {/* ── 固定左カラム（軸名） ── */}
           <div className="w-44 shrink-0 flex flex-col border-r border-gray-100 bg-gray-50">
             {/* ヘッダ高さ合わせ（列ヘッダカード分） */}
@@ -326,6 +402,7 @@ export default function Compare() {
             </div>
           </div>
         </div>
+        </>
       )}
     </div>
   );
