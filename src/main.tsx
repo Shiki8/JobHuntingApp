@@ -25,25 +25,9 @@ function SyncIndicator() {
   );
 }
 
-function OfflineBanner({ onClose }: { onClose: () => void }) {
-  return (
-    <div className="fixed top-0 left-0 right-0 z-50 bg-amber-50 border-b border-amber-200 px-4 py-2 flex items-center justify-between gap-3 text-sm text-amber-800">
-      <span>オフラインのため、前回のデータを表示しています</span>
-      <button
-        onClick={onClose}
-        aria-label="閉じる"
-        className="shrink-0 text-amber-600 hover:text-amber-800 font-medium"
-      >
-        閉じる
-      </button>
-    </div>
-  );
-}
-
 function AppShell() {
   const { session, loading } = useAuth();
   const [syncing, setSyncing] = useState(false);
-  const [pullFailed, setPullFailed] = useState(false);
   const [migrationData, setMigrationData] = useState<{
     jobs: Job[]; criteria: Criteria[]; scores: Score[];
   } | null>(null);
@@ -58,7 +42,6 @@ function AppShell() {
     setSyncing(true);
     pullAll()
       .then(() => {
-        setPullFailed(false);
         const jobsAfterPull = useJobStore.getState().jobs;
         if (needsMigration({
           supabaseEmpty: jobsAfterPull.length === 0,
@@ -68,10 +51,7 @@ function AppShell() {
           setMigrationData(snapshot);
         }
       })
-      .catch((err) => {
-        console.error(err);
-        setPullFailed(true);
-      })
+      .catch(console.error)
       .finally(() => setSyncing(false));
   }, [session]);
 
@@ -80,7 +60,6 @@ function AppShell() {
   return (
     <>
       {syncing && <SyncIndicator />}
-      {pullFailed && !syncing && <OfflineBanner onClose={() => setPullFailed(false)} />}
       {migrationData && (
         <MigrationDialog
           jobs={migrationData.jobs}
