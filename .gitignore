@@ -12,6 +12,13 @@ dist
 dist-ssr
 *.local
 
+# Test artifacts
+playwright-report/
+test-results/
+
+# Claude Code local settings (machine-specific)
+.claude/settings.local.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
