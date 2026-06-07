@@ -1,4 +1,8 @@
 import { defineConfig } from '@playwright/test';
+import { loadEnv } from 'vite';
+
+const env = loadEnv('development', process.cwd(), '');
+process.env.VITE_SUPABASE_URL = env.VITE_SUPABASE_URL;
 
 export default defineConfig({
   testDir: './e2e',

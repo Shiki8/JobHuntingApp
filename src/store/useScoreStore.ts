@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { type Score } from '../types';
 import { nanoid } from '../lib/nanoid';
+import { pushUpsert, pushDelete } from '../lib/sync';
 
 interface ScoreStore {
   scores: Score[];
@@ -22,7 +23,7 @@ export const useScoreStore = create<ScoreStore>()(
       scores: [],
       _version: 1,
 
-      upsertScore: (jobId, criteriaId, patch) =>
+      upsertScore: (jobId, criteriaId, patch) => {
         set((s) => {
           const existing = s.scores.find(
             (sc) => sc.jobId === jobId && sc.criteriaId === criteriaId
@@ -37,16 +38,27 @@ export const useScoreStore = create<ScoreStore>()(
           return {
             scores: [...s.scores, { id: nanoid(), jobId, criteriaId, ...patch }],
           };
-        }),
+        });
+        const score = get().scores.find((sc) => sc.jobId === jobId && sc.criteriaId === criteriaId);
+        if (score) pushUpsert('scores', score.id, score).catch(console.error);
+      },
 
-      deleteScore: (id) =>
-        set((s) => ({ scores: s.scores.filter((sc) => sc.id !== id) })),
+      deleteScore: (id) => {
+        set((s) => ({ scores: s.scores.filter((sc) => sc.id !== id) }));
+        pushDelete('scores', id).catch(console.error);
+      },
 
-      deleteScoresByJob: (jobId) =>
-        set((s) => ({ scores: s.scores.filter((sc) => sc.jobId !== jobId) })),
+      deleteScoresByJob: (jobId) => {
+        const ids = get().scores.filter((sc) => sc.jobId === jobId).map((sc) => sc.id);
+        set((s) => ({ scores: s.scores.filter((sc) => sc.jobId !== jobId) }));
+        ids.forEach((id) => pushDelete('scores', id).catch(console.error));
+      },
 
-      deleteScoresByCriteria: (criteriaId) =>
-        set((s) => ({ scores: s.scores.filter((sc) => sc.criteriaId !== criteriaId) })),
+      deleteScoresByCriteria: (criteriaId) => {
+        const ids = get().scores.filter((sc) => sc.criteriaId === criteriaId).map((sc) => sc.id);
+        set((s) => ({ scores: s.scores.filter((sc) => sc.criteriaId !== criteriaId) }));
+        ids.forEach((id) => pushDelete('scores', id).catch(console.error));
+      },
 
       getScore: (jobId, criteriaId) =>
         get().scores.find((sc) => sc.jobId === jobId && sc.criteriaId === criteriaId),
