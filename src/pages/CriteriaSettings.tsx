@@ -160,7 +160,7 @@ export default function CriteriaSettings() {
   };
 
   const handleAdd = () => {
-    addCriteria({ name: '', weight: 3, description: '', order: criteria.length });
+    addCriteria({ name: '', weight: 3, description: '' });
   };
 
   return (

@@ -6,7 +6,7 @@ import { useJobStore } from '../store/useJobStore';
 import { useScoreStore } from '../store/useScoreStore';
 import { useCriteriaStore } from '../store/useCriteriaStore';
 import {
-  StatusBadge, Button, ConfirmModal, ScoreWithLabel, Tag,
+  Button, ConfirmModal, ScoreWithLabel, Tag,
 } from '../components/ui';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 
