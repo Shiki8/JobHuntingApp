@@ -1,11 +1,11 @@
 import { useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, SlidersHorizontal, Briefcase } from 'lucide-react';
+import { Search, Briefcase } from 'lucide-react';
 import { APPLICATION_STATUSES, type ApplicationStatus, JOB_SOURCES, type RemoteType } from '../types';
 import { useJobStore } from '../store/useJobStore';
 import { JobCard } from '../components/JobCard';
 import { CompareBar } from '../components/CompareBar';
-import { Button, CountBadge, EmptyState, Select } from '../components/ui';
+import { Button, CountBadge, EmptyState } from '../components/ui';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 
 const REMOTE_OPTIONS: { value: string; label: string }[] = [
