@@ -48,7 +48,7 @@ function numCell(val: number | null): string {
 
 // ── Column definitions (order per spec) ───────────────────────────────────────
 
-const COLUMNS: { header: string; render: (job: Job) => React.ReactNode }[] = [
+const COLUMNS: { header: string; minWidth?: string; render: (job: Job) => React.ReactNode }[] = [
   { header: '勤務地',       render: (j) => strCell(j.location) },
   { header: '年収',         render: (j) => salaryCell(j) },
   { header: '始業時間',     render: (j) => strCell(j.workStartTime) },
@@ -61,6 +61,18 @@ const COLUMNS: { header: string; render: (job: Job) => React.ReactNode }[] = [
   { header: '技術スタック', render: (j) => skillsCell(j.techStack) },
   { header: '応募ステータス', render: (j) => <StatusBadge status={j.status} /> },
   { header: '媒体',         render: (j) => sourceCell(j) },
+  {
+    header: '気になる点',
+    minWidth: 'min-w-[200px]',
+    render: (j) =>
+      j.notes ? (
+        <span className="line-clamp-4 whitespace-pre-wrap text-xs text-gray-600">
+          {j.notes}
+        </span>
+      ) : (
+        '—'
+      ),
+  },
 ];
 
 // ── Page ──────────────────────────────────────────────────────────────────────
@@ -124,7 +136,7 @@ export default function Compare() {
                 {COLUMNS.map((col) => (
                   <th
                     key={col.header}
-                    className="px-3 py-2 text-left text-xs font-semibold text-gray-500 border-b border-r border-gray-200 whitespace-nowrap min-w-[100px]"
+                    className={`px-3 py-2 text-left text-xs font-semibold text-gray-500 border-b border-r border-gray-200 whitespace-nowrap ${col.minWidth ?? 'min-w-[100px]'}`}
                   >
                     {col.header}
                   </th>
@@ -152,7 +164,7 @@ export default function Compare() {
                   {COLUMNS.map((col) => (
                     <td
                       key={col.header}
-                      className="px-3 py-3 border-b border-r border-gray-200 text-sm text-gray-700 align-top"
+                      className={`px-3 py-3 border-b border-r border-gray-200 text-sm text-gray-700 align-top ${col.minWidth ?? ''}`}
                     >
                       {col.render(job)}
                     </td>
