@@ -135,10 +135,10 @@ export default function Compare() {
               {selectedJobs.map((job, i) => (
                 <tr
                   key={job.id}
-                  className={i % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'}
+                  className={i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
                 >
                   {/* Left sticky cell: company + position + status badge */}
-                  <td className="sticky left-0 z-10 bg-inherit px-3 py-3 border-b border-r border-gray-200 min-w-[140px]">
+                  <td className={`sticky left-0 z-10 ${i % 2 === 0 ? 'bg-white' : 'bg-gray-50'} px-3 py-3 border-b border-r border-gray-200 min-w-[140px]`}>
                     <p className="font-semibold text-gray-900 text-xs leading-snug line-clamp-2">
                       {job.companyName}
                     </p>
