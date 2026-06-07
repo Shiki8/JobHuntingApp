@@ -23,7 +23,8 @@ PC での登録内容をスマホブラウザで確認できるようにする�
 - 同期処理は `src/lib/sync.ts` に分離し、既存の Zustand ストアへの変更を最小限に抑える
 - データ取得は起動時の1回のみ（リアルタイム購読なし）
 - 初回ログイン時に localStorage の既存データを Supabase へ自動マイグレーションするダイアログを表示する
-- フェーズ1はスマホからの閲覧のみ。双方向編集（競合解決）はフェーズ2以降
+- 書き込み（add/update/delete）のたびに即時 `pushUpsert` / `pushDelete` を呼び、双方向同期を実現する
+- 競合解決は last-write-wins（後から書き込んだ側が勝つ）とし、明示的な競合検出は行わない。個人利用かつ同時編集が現実的に発生しないため許容する
 
 ## Rationale
 
@@ -41,4 +42,4 @@ PC での登録内容をスマホブラウザで確認できるようにする�
 - Supabase プロジェクトの作成と環境変数（`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`）の設定が前提条件となる
 - ADR 0002 で採用した「バックエンドなし」方針はこの ADR により更新される。JobImport の生成フロー自体は変更しない
 - `nanoid` が生成する ID は UUID 形式ではなく 16 文字 hex 文字列のため、Supabase の `id` カラムは `UUID` 型ではなく `TEXT` 型とする
-- フェーズ2（スマホからの編集）では `updated_at` を使った last-write-wins の競合解決を別途設計する必要がある
+- フロントエンドは Vercel にホスティングし、GitHub push で自動デプロイする。Supabase の Redirect URLs に本番 URL を登録することが前提条件
