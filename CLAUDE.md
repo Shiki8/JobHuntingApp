@@ -19,9 +19,33 @@ npm run test:e2e     # Playwright E2E テスト（dev サーバーを自動起�
 npx vitest run src/lib/jobImport.test.ts
 ```
 
+## 開発ワークフロー
+
+### 新機能
+1. `/grill-with-docs` でグリルしながら `docs/flows/` を更新（ユーザー視点）
+2. `docs/features/` に実装詳細・Background を追記
+3. 実装
+4. PR 作成（PRテンプレートのドキュメントチェックリストを確認）
+
+### バグ修正
+1. GitHub Issue を起票
+2. 実装
+3. 関連 `docs/features/` または `docs/flows/` を更新（仕様に影響する場合）
+4. PR 作成
+
+### コミット規約
+ドキュメント更新コミットには `docs:` プレフィックスを使用する。
+
+```
+docs: add job-import-flow.md
+docs: update score-input.md with weight=0 behavior
+feat: implement job import normalization
+fix: correct weighted total denominator
+```
+
 ## ドメイン用語
 
-詳細は `CONTEXT.md` を参照。主要概念の対応:
+詳細は [`docs/context.md`](docs/context.md) を参照。主要概念の対応:
 
 | 用語 | 型 | 説明 |
 |---|---|---|
