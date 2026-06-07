@@ -59,7 +59,6 @@ const COLUMNS: { header: string; minWidth?: string; render: (job: Job) => React.
   { header: '雇用形態',     render: (j) => j.employmentType },
   { header: '必須スキル',   render: (j) => skillsCell(j.requiredSkills) },
   { header: '技術スタック', render: (j) => skillsCell(j.techStack) },
-  { header: '応募ステータス', render: (j) => <StatusBadge status={j.status} /> },
   { header: '媒体',         render: (j) => sourceCell(j) },
   {
     header: '気になる点',
@@ -130,7 +129,7 @@ export default function Compare() {
             <thead>
               <tr className="bg-gray-50">
                 {/* Left sticky header cell */}
-                <th className="sticky left-0 z-20 bg-gray-50 px-3 py-2 text-left text-xs font-semibold text-gray-500 border-b border-r border-gray-200 min-w-[140px]">
+                <th className="sticky left-0 z-20 bg-gray-50 px-3 py-2 text-left text-xs font-semibold text-gray-500 border-b border-r border-gray-200 w-[100px]">
                   求人
                 </th>
                 {COLUMNS.map((col) => (
@@ -150,7 +149,7 @@ export default function Compare() {
                   className={i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
                 >
                   {/* Left sticky cell: company + position + status badge */}
-                  <td className={`sticky left-0 z-10 ${i % 2 === 0 ? 'bg-white' : 'bg-gray-50'} px-3 py-3 border-b border-r border-gray-200 min-w-[140px]`}>
+                  <td className={`sticky left-0 z-10 ${i % 2 === 0 ? 'bg-white' : 'bg-gray-50'} px-3 py-3 border-b border-r border-gray-200 w-[100px]`}>
                     <p className="font-semibold text-gray-900 text-xs leading-snug line-clamp-2">
                       {job.companyName}
                     </p>
