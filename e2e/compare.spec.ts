@@ -188,4 +188,54 @@ test.describe('Compare: 基本情報セル', () => {
     // 勤務地が空 → —
     await expect(row2.locator('td').nth(1)).toContainText('—');
   });
+
+  test('notes が入力されていれば「気になる点」列に表示される', async ({ page }) => {
+    await injectFakeSession(page);
+    const jobsWithNotes = [
+      { ...JOBS[0], notes: 'オンコールが心配' },
+      { ...JOBS[1], notes: '' },
+    ];
+    await page.route('**/rest/v1/jobs*', (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(jobsWithNotes.map((j) => ({ id: j.id, data: j }))),
+      })
+    );
+    await page.goto('/');
+    const checkboxes = page.getByRole('checkbox');
+    await checkboxes.first().check();
+    await checkboxes.nth(1).check();
+    await page.getByRole('link', { name: '比較' }).first().click();
+    await page.waitForURL('/compare');
+
+    const table = page.getByTestId('compare-table');
+    await expect(table).toContainText('気になる点');
+    await expect(table).toContainText('オンコールが心配');
+  });
+
+  test('notes が未入力のとき「気になる点」列は「—」と表示される', async ({ page }) => {
+    await injectFakeSession(page);
+    const jobsNoNotes = [
+      { ...JOBS[0], notes: '' },
+      { ...JOBS[1], notes: '' },
+    ];
+    await page.route('**/rest/v1/jobs*', (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(jobsNoNotes.map((j) => ({ id: j.id, data: j }))),
+      })
+    );
+    await page.goto('/');
+    const checkboxes = page.getByRole('checkbox');
+    await checkboxes.first().check();
+    await checkboxes.nth(1).check();
+    await page.getByRole('link', { name: '比較' }).first().click();
+    await page.waitForURL('/compare');
+
+    const rows = page.getByTestId('compare-table').locator('tbody tr');
+    // 気になる点列は最後（td index = 13）
+    await expect(rows.first().locator('td').last()).toContainText('—');
+  });
 });
