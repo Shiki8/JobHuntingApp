@@ -103,19 +103,22 @@ test.describe('Compare: テーブル骨格', () => {
     await expect(table.getByText('サンプル合同会社B')).toBeVisible();
   });
 
-  test('ヘッダに12列の項目名が正しい順番で表示される', async ({ page }) => {
+  test('ヘッダに11列の項目名が正しい順番で表示される', async ({ page }) => {
     await goToCompareWithTwoJobs(page);
 
-    // nth(0) は左固定の「求人」列なのでスキップし、1〜12 を検証する
+    // nth(0) は左固定の「求人」列なのでスキップし、1〜11 を検証する
+    // 応募ステータスはスティッキー列のバッジで表示するため列から除外
     const headers = page.getByTestId('compare-table').locator('thead th');
     const expected = [
       '勤務地', '年収', '始業時間', 'リモート可否',
       '年間賞与', '年末年始休暇', '住宅補助', '雇用形態',
-      '必須スキル', '技術スタック', '応募ステータス', '媒体',
+      '必須スキル', '技術スタック', '媒体',
     ];
     for (let i = 0; i < expected.length; i++) {
       await expect(headers.nth(i + 1)).toContainText(expected[i]);
     }
+    // 応募ステータスはスティッキー列のバッジで表示するため列ヘッダには出ない
+    // （'媒体'が11番目に来ることで間接的に保証済み）
   });
 });
 
