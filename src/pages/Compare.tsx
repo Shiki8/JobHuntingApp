@@ -62,7 +62,7 @@ const COLUMNS: { header: string; minWidth?: string; render: (job: Job) => React.
   { header: '媒体',         render: (j) => sourceCell(j) },
   {
     header: '気になる点',
-    minWidth: 'min-w-[200px]',
+    minWidth: 'min-w-[200px] max-w-[240px]',
     render: (j) =>
       j.notes ? (
         <span className="line-clamp-4 whitespace-pre-wrap text-xs text-gray-600">
@@ -129,13 +129,13 @@ export default function Compare() {
             <thead>
               <tr className="bg-gray-50">
                 {/* Left sticky header cell */}
-                <th className="sticky left-0 z-20 bg-gray-50 px-3 py-2 text-left text-xs font-semibold text-gray-500 border-b border-r border-gray-200 w-[100px]">
+                <th className="sticky left-0 z-20 bg-gray-50 px-3 py-2 text-left text-xs font-semibold text-gray-500 border-b border-r border-gray-200 w-[120px]">
                   求人
                 </th>
                 {COLUMNS.map((col) => (
                   <th
                     key={col.header}
-                    className={`px-3 py-2 text-left text-xs font-semibold text-gray-500 border-b border-r border-gray-200 whitespace-nowrap ${col.minWidth ?? 'min-w-[100px]'}`}
+                    className={`px-3 py-2 text-left text-xs font-semibold text-gray-500 border-b border-r border-gray-200 whitespace-nowrap ${col.minWidth ?? 'min-w-[120px]'}`}
                   >
                     {col.header}
                   </th>
@@ -149,7 +149,7 @@ export default function Compare() {
                   className={i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
                 >
                   {/* Left sticky cell: company + position + status badge */}
-                  <td className={`sticky left-0 z-10 ${i % 2 === 0 ? 'bg-white' : 'bg-gray-50'} px-3 py-3 border-b border-r border-gray-200 w-[100px]`}>
+                  <td className={`sticky left-0 z-10 ${i % 2 === 0 ? 'bg-white' : 'bg-gray-50'} px-3 py-3 border-b border-r border-gray-200 w-[120px]`}>
                     <p className="font-semibold text-gray-900 text-xs leading-snug line-clamp-2">
                       {job.companyName}
                     </p>
