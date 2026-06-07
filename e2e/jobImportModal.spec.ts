@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { injectFakeSession } from './helpers/fakeSession';
 
 const VALID_JSON = JSON.stringify({
   companyName: 'テスト株式会社',
@@ -16,6 +17,7 @@ const VALID_JSON = JSON.stringify({
 
 test.describe('JSON から入力モーダル', () => {
   test.beforeEach(async ({ page }) => {
+    await injectFakeSession(page);
     await page.goto('/jobs/new');
     await page.waitForSelector('h1:has-text("求人を追加")');
   });

@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { type Job, type ApplicationStatus } from '../types';
+import { pushUpsert, pushDelete } from '../lib/sync';
 
 interface JobFilters {
   search: string;
@@ -36,18 +37,25 @@ export const useJobStore = create<JobStore>()(
       filters: DEFAULT_FILTERS,
       _version: 1,
 
-      addJob: (job) =>
-        set((s) => ({ jobs: [...s.jobs, job] })),
+      addJob: (job) => {
+        set((s) => ({ jobs: [...s.jobs, job] }));
+        pushUpsert('jobs', job.id, job).catch(console.error);
+      },
 
-      updateJob: (id, patch) =>
+      updateJob: (id, patch) => {
         set((s) => ({
           jobs: s.jobs.map((j) =>
             j.id === id ? { ...j, ...patch, updatedAt: new Date().toISOString() } : j
           ),
-        })),
+        }));
+        const updated = get().jobs.find((j) => j.id === id);
+        if (updated) pushUpsert('jobs', id, updated).catch(console.error);
+      },
 
-      deleteJob: (id) =>
-        set((s) => ({ jobs: s.jobs.filter((j) => j.id !== id) })),
+      deleteJob: (id) => {
+        set((s) => ({ jobs: s.jobs.filter((j) => j.id !== id) }));
+        pushDelete('jobs', id).catch(console.error);
+      },
 
       setFilters: (patch) =>
         set((s) => ({ filters: { ...s.filters, ...patch } })),

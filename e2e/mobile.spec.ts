@@ -1,7 +1,12 @@
 import { test, expect } from '@playwright/test';
+import { injectFakeSession } from './helpers/fakeSession';
 
 const MOBILE = { width: 375, height: 812 };
 const DESKTOP = { width: 1280, height: 800 };
+
+test.beforeEach(async ({ page }) => {
+  await injectFakeSession(page);
+});
 
 // ─── #11 Layout ───────────────────────────────────────────────
 test.describe('Layout: モバイルナビゲーション', () => {
@@ -74,35 +79,34 @@ test.describe('比較画面: モバイルレイアウト', () => {
   });
 
   test('モバイル幅で転置テーブル（行=求人・列=評価軸）のコンテナが存在する', async ({ page }) => {
-    await page.addInitScript(() => {
-      localStorage.setItem('job-store', JSON.stringify({
-        state: {
-          jobs: [
-            {
-              id: 'j1', companyName: 'テスト株式会社A', position: 'エンジニア',
-              source: 'Wantedly', sourceNote: '', url: '', salaryMin: 600, salaryMax: 900,
-              location: '東京', remoteType: 'フルリモート', employmentType: '正社員',
-              yearEndHolidays: null, workStartTime: '', housingAllowance: false,
-              annualBonus: null, requiredSkills: [], preferredSkills: [], techStack: [],
-              summary: '', notes: '', status: '未応募', appliedAt: null, nextActionAt: null,
-              createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(),
-            },
-            {
-              id: 'j2', companyName: 'テスト株式会社B', position: 'デザイナー',
-              source: 'Green', sourceNote: '', url: '', salaryMin: 500, salaryMax: 700,
-              location: '大阪', remoteType: '一部リモート', employmentType: '正社員',
-              yearEndHolidays: null, workStartTime: '', housingAllowance: false,
-              annualBonus: null, requiredSkills: [], preferredSkills: [], techStack: [],
-              summary: '', notes: '', status: '未応募', appliedAt: null, nextActionAt: null,
-              createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(),
-            },
-          ],
-          filters: { search: '', status: 'すべて', source: '', remoteType: '' },
-          _version: 1,
-        },
-        version: 1,
-      }));
-    });
+    const jobs = [
+      {
+        id: 'j1', companyName: 'テスト株式会社A', position: 'エンジニア',
+        source: 'Wantedly', sourceNote: '', url: '', salaryMin: 600, salaryMax: 900,
+        location: '東京', remoteType: 'フルリモート', employmentType: '正社員',
+        yearEndHolidays: null, workStartTime: '', housingAllowance: false,
+        annualBonus: null, requiredSkills: [], preferredSkills: [], techStack: [],
+        summary: '', notes: '', status: '未応募', appliedAt: null, nextActionAt: null,
+        createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(),
+      },
+      {
+        id: 'j2', companyName: 'テスト株式会社B', position: 'デザイナー',
+        source: 'Green', sourceNote: '', url: '', salaryMin: 500, salaryMax: 700,
+        location: '大阪', remoteType: '一部リモート', employmentType: '正社員',
+        yearEndHolidays: null, workStartTime: '', housingAllowance: false,
+        annualBonus: null, requiredSkills: [], preferredSkills: [], techStack: [],
+        summary: '', notes: '', status: '未応募', appliedAt: null, nextActionAt: null,
+        createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(),
+      },
+    ];
+    // injectFakeSession の **/rest/v1/** モックより後に登録することで上書きする
+    await page.route('**/rest/v1/jobs*', (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(jobs.map((j) => ({ id: j.id, data: j }))),
+      })
+    );
     await page.setViewportSize(MOBILE);
     await page.goto('/');
 
@@ -130,6 +134,7 @@ test.describe('求人フォーム: モバイルレイアウト', () => {
   test('モバイル幅でバリデーションが正常に動作する', async ({ page }) => {
     await page.setViewportSize(MOBILE);
     await page.goto('/jobs/new');
+    await page.waitForSelector('form');
 
     // 送信ボタンはフォーム末尾にあるため requestSubmit でフォームを送信
     await page.evaluate(() => {

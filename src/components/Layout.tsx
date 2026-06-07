@@ -1,7 +1,8 @@
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { LayoutList, GitCompareArrows, SlidersHorizontal, Settings, Plus } from 'lucide-react';
+import { LayoutList, GitCompareArrows, SlidersHorizontal, Settings, Plus, LogOut } from 'lucide-react';
 import { useEffect } from 'react';
 import { useCriteriaStore } from '../store/useCriteriaStore';
+import { useAuth } from '../context/AuthContext';
 
 const NAV_ITEMS = [
   { to: '/',         label: '求人一覧', icon: LayoutList,          end: true },
@@ -14,6 +15,7 @@ export default function Layout() {
   const navigate = useNavigate();
   const location = useLocation();
   const initDefaults = useCriteriaStore((s) => s.initDefaults);
+  const { signOut } = useAuth();
 
   useEffect(() => {
     initDefaults();
@@ -56,13 +58,20 @@ export default function Layout() {
         </nav>
 
         {/* Add job button */}
-        <div className="p-3 border-t border-gray-100">
+        <div className="p-3 border-t border-gray-100 flex flex-col gap-2">
           <button
             onClick={() => navigate('/jobs/new')}
             className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition-colors"
           >
             <Plus size={16} strokeWidth={2.5} />
             求人を追加
+          </button>
+          <button
+            onClick={signOut}
+            className="flex items-center justify-center gap-2 w-full py-2 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600 text-sm transition-colors"
+          >
+            <LogOut size={15} strokeWidth={1.75} />
+            ログアウト
           </button>
         </div>
       </aside>
