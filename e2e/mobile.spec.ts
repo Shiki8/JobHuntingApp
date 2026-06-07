@@ -78,7 +78,7 @@ test.describe('比較画面: モバイルレイアウト', () => {
     await expect(page.getByText('比較する求人を選んでください')).toBeVisible();
   });
 
-  test('モバイル幅で転置テーブル（行=求人・列=評価軸）のコンテナが存在する', async ({ page }) => {
+  test('モバイル幅で比較テーブルが表示される', async ({ page }) => {
     const jobs = [
       {
         id: 'j1', companyName: 'テスト株式会社A', position: 'エンジニア',
@@ -99,7 +99,6 @@ test.describe('比較画面: モバイルレイアウト', () => {
         createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(),
       },
     ];
-    // injectFakeSession の **/rest/v1/** モックより後に登録することで上書きする
     await page.route('**/rest/v1/jobs*', (route) =>
       route.fulfill({
         status: 200,
@@ -110,14 +109,13 @@ test.describe('比較画面: モバイルレイアウト', () => {
     await page.setViewportSize(MOBILE);
     await page.goto('/');
 
-    // チェックボックスで2件選択して比較ページへ
     const checkboxes = page.getByRole('checkbox');
     await checkboxes.first().check();
     await checkboxes.nth(1).check();
     await page.getByRole('navigation', { name: 'ボトムナビゲーション' })
       .getByRole('link', { name: '比較' }).click();
 
-    await expect(page.getByTestId('compare-mobile')).toBeVisible();
+    await expect(page.getByTestId('compare-table')).toBeVisible();
   });
 });
 
