@@ -39,6 +39,7 @@ function AppShell() {
     const snapshot = readLocalSnapshot();
     const flagSet = isMigrationFlagSet();
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSyncing(true);
     pullAll()
       .then(() => {
