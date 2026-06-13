@@ -8,16 +8,24 @@ export function CompareBar() {
   const { selectedIds, toggle, clear } = useCompareStore();
   const jobs = useJobStore((s) => s.jobs);
 
-  if (selectedIds.length === 0) return null;
-
   const selected = selectedIds
     .map((id) => jobs.find((j) => j.id === id))
     .filter(Boolean) as ReturnType<typeof jobs.find>[];
 
+  const isVisible = selectedIds.length > 0;
+
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-3 px-5 py-3.5 bg-gray-900 text-white rounded-2xl shadow-2xl">
-      {/* Selected job chips */}
-      <div className="flex items-center gap-2">
+    <div
+      className={[
+        'fixed bottom-[83px] md:bottom-6 left-1/2 -translate-x-1/2 z-40',
+        'flex items-center gap-3 px-5 py-3.5 bg-gray-900 text-white rounded-2xl shadow-2xl',
+        'transition-transform duration-300 ease-in-out',
+        isVisible ? 'translate-y-0' : 'translate-y-[200%]',
+        !isVisible ? 'pointer-events-none' : '',
+      ].join(' ')}
+    >
+      {/* Selected job chips (desktop only) */}
+      <div className="hidden md:flex items-center gap-2">
         {selected.map((job) => job && (
           <span
             key={job.id}
@@ -34,7 +42,10 @@ export function CompareBar() {
         ))}
       </div>
 
-      <div className="w-px h-5 bg-white/20" />
+      {/* Count text (mobile only) */}
+      <span className="md:hidden text-sm text-white/80">{selectedIds.length}件選択中</span>
+
+      <div className="hidden md:block w-px h-5 bg-white/20" />
 
       {/* Clear */}
       <button
