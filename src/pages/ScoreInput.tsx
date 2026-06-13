@@ -122,6 +122,7 @@ export default function ScoreInput() {
 
   // 評価軸が後から追加された場合に対応
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setDrafts((prev) => {
       const next = { ...prev };
       for (const c of criteria) {
