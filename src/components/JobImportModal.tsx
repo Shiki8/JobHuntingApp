@@ -14,7 +14,7 @@ JSON のみ出力してください（コードブロック・説明文は不要
 {
   "companyName": "企業名",
   "position": "職種・ポジション名",
-  "source": "求人媒体（Wantedly / Green / doda / LinkedIn / Findy / 企業サイト / エージェント / その他）",
+  "source": "求人媒体（doda / リクルートエージェント / マイナビ転職 / マイナビ転職エージェント / Indeed / その他）",
   "url": "求人URL",
   "salaryMin": "年収下限・万円単位の整数（不明な場合は省略）",
   "salaryMax": "年収上限・万円単位の整数（不明な場合は省略）",

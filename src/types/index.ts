@@ -18,17 +18,15 @@ export const APPLICATION_STATUSES: ApplicationStatus[] = [
 ];
 
 export type JobSource =
-  | 'Wantedly'
-  | 'Green'
   | 'doda'
-  | 'LinkedIn'
-  | 'Findy'
-  | '企業サイト'
-  | 'エージェント'
+  | 'リクルートエージェント'
+  | 'マイナビ転職'
+  | 'マイナビ転職エージェント'
+  | 'Indeed'
   | 'その他';
 
 export const JOB_SOURCES: JobSource[] = [
-  'Wantedly', 'Green', 'doda', 'LinkedIn', 'Findy', '企業サイト', 'エージェント', 'その他',
+  'doda', 'リクルートエージェント', 'マイナビ転職', 'マイナビ転職エージェント', 'Indeed', 'その他',
 ];
 
 export type RemoteType = '不可' | '一部リモート' | 'フルリモート';

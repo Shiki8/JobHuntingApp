@@ -47,14 +47,14 @@ describe('parseJobImport', () => {
 
 describe('normalizeJobImport', () => {
   it('source が enum 外の値の場合、source="その他" かつ sourceNote に元の値が入る', () => {
-    const result = normalizeJobImport({ source: 'Indeed' })
+    const result = normalizeJobImport({ source: 'Wantedly' })
     expect(result.source).toBe('その他')
-    expect(result.sourceNote).toBe('Indeed')
+    expect(result.sourceNote).toBe('Wantedly')
   })
 
   it('source が enum 内の値の場合、source はそのまま・sourceNote は空', () => {
-    const result = normalizeJobImport({ source: 'Green' })
-    expect(result.source).toBe('Green')
+    const result = normalizeJobImport({ source: 'doda' })
+    expect(result.source).toBe('doda')
     expect(result.sourceNote).toBe('')
   })
 

@@ -38,7 +38,7 @@ JobImport（LLM 出力 JSON）による自動入力は、フォームを直接�
 |---|---|---|---|---|
 | 企業名（`companyName`） | string | 必須 | `''` | 空白のみも無効 |
 | 職種・ポジション名（`position`） | string | 必須 | `''` | 空白のみも無効 |
-| 媒体（`source`） | JobSource | 任意 | `'Wantedly'` | JOB_SOURCES 列挙値から選択 |
+| 媒体（`source`） | JobSource | 任意 | `'doda'` | JOB_SOURCES 列挙値から選択 |
 | 媒体名・自由入力（`sourceNote`） | string | 任意 | `''` | `source === 'その他'` のときのみ表示 |
 | 求人URL（`url`） | string (url) | 任意 | `''` | |
 
