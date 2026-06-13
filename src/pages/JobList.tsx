@@ -49,10 +49,10 @@ export default function JobList() {
       {/* Page header */}
       <div className="flex items-center justify-between px-8 py-6 border-b border-gray-100 bg-white">
         <div className="flex items-center gap-3">
-          <h1 className="text-xl font-semibold text-gray-900">求人一覧</h1>
+          <h1 className="text-xl font-semibold text-gray-900 whitespace-nowrap">求人一覧</h1>
           <CountBadge count={jobs.length} />
         </div>
-        <div className="flex items-center gap-2">
+        <div className="hidden sm:flex items-center gap-2">
           {/* Search */}
           <div className="relative">
             <Search
