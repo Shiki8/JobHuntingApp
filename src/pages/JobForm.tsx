@@ -21,7 +21,7 @@ const SOURCE_OPTIONS = JOB_SOURCES.map((s) => ({ value: s, label: s }));
 const STATUS_OPTIONS = APPLICATION_STATUSES.map((s) => ({ value: s, label: s }));
 
 const EMPTY_JOB: Omit<Job, 'id' | 'createdAt' | 'updatedAt'> = {
-  companyName: '', position: '', source: 'Wantedly', sourceNote: '', url: '',
+  companyName: '', position: '', source: 'doda', sourceNote: '', url: '',
   salaryMin: null, salaryMax: null, location: '', remoteType: 'フルリモート',
   employmentType: '正社員', yearEndHolidays: null, workStartTime: '',
   housingAllowance: false, annualBonus: null,

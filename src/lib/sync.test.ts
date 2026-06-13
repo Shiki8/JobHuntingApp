@@ -17,7 +17,7 @@ vi.mock('./supabase', () => ({
 
 const mockJob: Job = {
   id: 'j1', companyName: 'テスト株式会社', position: 'エンジニア',
-  source: 'Wantedly', sourceNote: '', url: '', salaryMin: 600, salaryMax: 900,
+  source: 'doda', sourceNote: '', url: '', salaryMin: 600, salaryMax: 900,
   location: '東京', remoteType: 'フルリモート', employmentType: '正社員',
   yearEndHolidays: null, workStartTime: '9:00', housingAllowance: false,
   annualBonus: null, requiredSkills: [], preferredSkills: [], techStack: [],
