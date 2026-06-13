@@ -89,6 +89,12 @@ npx vitest run src/lib/jobImport.test.ts
 | `/qa` | リリース前に網羅的にエッジケースを確認したい | 実装とテストが自明な小変更 |
 | `/design-to-component` | Figma フレームURLがある・デザイン仕様に忠実な実装が必要 | Figma デザインがない・簡単な UI を説明から直接実装できる |
 
+### ブランチ戦略
+- `main` から作業ブランチを切る
+- 命名: `feat/<slug>` / `fix/<slug>` / `docs/<slug>` / `refactor/<slug>`
+- PR は `main` に向けて作成し、ユーザーがレビュー後にマージ
+- マージ戦略: **Squash merge**（作業中の細かいコミットを1つにまとめて main に追加）
+
 ### コミット規約
 ドキュメント更新コミットには `docs:` プレフィックスを使用する。
 
@@ -118,9 +124,33 @@ refactor: extract weighted total calculation
 - React 19 + TypeScript + Vite 8
 - Tailwind CSS v4（`@tailwindcss/vite` プラグイン経由）
 - React Router v7（`createBrowserRouter`）
-- Zustand + `persist` ミドルウェア（全データを **localStorage** に保存。バックエンドなし）
+- Zustand + `persist` ミドルウェア（**localStorage** をキャッシュとして利用）
+- Supabase（認証 + クラウド同期。`@supabase/supabase-js`）
 - dnd-kit（評価軸の並び替え）
+- lucide-react（アイコン）
 - Vitest（ユニットテスト）、Playwright（E2E）
+
+### 認証フロー
+
+`src/context/AuthContext.tsx` が Supabase Auth（Google OAuth）を管理する `AuthProvider` / `useAuth` を提供。
+
+`src/main.tsx` の `AppShell` がエントリポイント:
+- `session === null` → `<LoginPage />` を全画面表示
+- `session` あり → `pullAll()` でクラウドからデータ取得 → `<RouterProvider>` でアプリ本体を表示
+- ログイン直後に localStorage にデータがあれば `<MigrationDialog>` でクラウドへの移行を促す
+
+### データ永続化 & 同期
+
+データは **localStorage（Zustand persist）** と **Supabase** の二重管理。
+
+```
+書き込み: ストアの mutate → localStorage に即時反映 + Supabase に pushUpsert / pushDelete
+読み込み: ログイン時に pullAll() → Supabase から取得してストアを上書き
+```
+
+`src/lib/sync.ts` — `pullAll()` / `pushUpsert()` / `pushDelete()` を提供。セッションがない場合は no-op。
+
+`src/lib/migration.ts` — localStorage → Supabase への初回移行ロジック。`needsMigration()` で移行が必要か判定し、フラグ（`localStorage "migration-done-v1"`）で再表示を防ぐ。
 
 ### ストア構成
 
@@ -131,11 +161,13 @@ useScoreStore    → localStorage "score-store"     評価レコード (Job×Cri
 useCompareStore  → 非永続化                       比較選択中の求人ID（最大5件）
 ```
 
+各ストアの書き込み操作は Supabase への同期（`pushUpsert` / `pushDelete`）を fire-and-forget で呼ぶ。
+
 **連鎖削除のルール**: ストア間の直接依存を避けるため、Job 削除時に `deleteScoresByJob`、Criteria 削除時に `deleteScoresByCriteria` を呼ぶのは UI（ページ・コンポーネント）側の責務。
 
 ### ルーティング
 
-`src/routes.tsx` で定義。`Layout` がシェル（サイドバー）を担い、`<Outlet>` で各ページを差し込む。
+`src/routes.tsx` で定義。`Layout` がシェル（サイドバー）を担い、`<Outlet>` で各ページを差し込む。未ログイン時は `AppShell` がルーター手前で `<LoginPage>` を差し込むため、`/login` ルートは存在しない。
 
 ```
 /                → JobList（求人一覧・フィルター）
@@ -164,6 +196,13 @@ useCompareStore  → 非永続化                       比較選択中の求人
 ### UI コンポーネント
 
 `src/components/ui/` に汎用プリミティブ（Button, Badge, Input, Modal, Spinner, Tag, ScoreStars, EmptyState）。`index.ts` から再エクスポートされている。
+
+`src/components/` のアプリ固有コンポーネント:
+- `CompareBar` — 比較選択バー（モバイルではボトムナビ上に表示）
+- `JobCard` — 求人一覧カード
+- `JobImportModal` — JSON 貼り付けモーダル
+- `MigrationDialog` — localStorage → Supabase 初回移行ダイアログ
+- `Layout` — サイドバー + `<Outlet>` を持つシェル
 
 ### nanoid
 
