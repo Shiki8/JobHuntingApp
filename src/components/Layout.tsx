@@ -2,6 +2,7 @@ import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { LayoutList, GitCompareArrows, SlidersHorizontal, Settings, Plus, LogOut } from 'lucide-react';
 import { useEffect } from 'react';
 import { useCriteriaStore } from '../store/useCriteriaStore';
+import { useCompareStore } from '../store/useCompareStore';
 import { useAuth } from '../context/AuthContext';
 
 const NAV_ITEMS = [
@@ -20,6 +21,8 @@ export default function Layout() {
   useEffect(() => {
     initDefaults();
   }, [initDefaults]);
+
+  const { selectedIds } = useCompareStore();
 
   const isFormRoute =
     location.pathname === '/jobs/new' ||
@@ -110,8 +113,8 @@ export default function Layout() {
         </div>
       </nav>
 
-      {/* FAB: 求人を追加（モバイルのみ・フォームルートでは非表示） */}
-      {!isFormRoute && (
+      {/* FAB: 求人を追加（モバイルのみ・フォームルートおよびCompareBar表示中は非表示） */}
+      {!isFormRoute && selectedIds.length === 0 && (
         <button
           aria-label="求人を追加"
           onClick={() => navigate('/jobs/new')}
