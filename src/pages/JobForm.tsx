@@ -45,6 +45,7 @@ export default function JobForm() {
       const job = jobs.find((j) => j.id === id);
       if (job) {
         const { id: _id, createdAt: _c, updatedAt: _u, ...rest } = job;
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setForm(rest);
       }
     }
@@ -61,7 +62,7 @@ export default function JobForm() {
     return Object.keys(errs).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validate()) return;
     const now = new Date().toISOString();
