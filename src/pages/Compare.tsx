@@ -48,8 +48,20 @@ function numCell(val: number | null): string {
 
 // ── Column definitions (order per spec) ───────────────────────────────────────
 
-const COLUMNS: { header: string; minWidth?: string; render: (job: Job) => React.ReactNode }[] = [
-  { header: '勤務地',       render: (j) => strCell(j.location) },
+const COLUMNS: {
+  header: string;
+  colClass?: string;
+  clamp?: boolean;
+  getTitle?: (job: Job) => string;
+  render: (job: Job) => React.ReactNode;
+}[] = [
+  {
+    header: '勤務地',
+    colClass: 'min-w-[120px] max-w-[200px]',
+    clamp: true,
+    getTitle: (j) => j.location ?? '',
+    render: (j) => strCell(j.location),
+  },
   { header: '年収',         render: (j) => salaryCell(j) },
   { header: '始業時間',     render: (j) => strCell(j.workStartTime) },
   { header: 'リモート可否', render: (j) => j.remoteType },
@@ -57,12 +69,29 @@ const COLUMNS: { header: string; minWidth?: string; render: (job: Job) => React.
   { header: '年末年始休暇', render: (j) => numCell(j.yearEndHolidays) },
   { header: '住宅補助',     render: (j) => (j.housingAllowance ? '✓' : '—') },
   { header: '雇用形態',     render: (j) => j.employmentType },
-  { header: '必須スキル',   render: (j) => skillsCell(j.requiredSkills) },
-  { header: '技術スタック', render: (j) => skillsCell(j.techStack) },
-  { header: '媒体',         render: (j) => sourceCell(j) },
+  {
+    header: '必須スキル',
+    colClass: 'min-w-[120px] max-w-[200px]',
+    getTitle: (j) => j.requiredSkills.join(', '),
+    render: (j) => skillsCell(j.requiredSkills),
+  },
+  {
+    header: '技術スタック',
+    colClass: 'min-w-[120px] max-w-[200px]',
+    getTitle: (j) => j.techStack.join(', '),
+    render: (j) => skillsCell(j.techStack),
+  },
+  {
+    header: '媒体',
+    colClass: 'min-w-[120px] max-w-[200px]',
+    clamp: true,
+    getTitle: (j) => sourceCell(j),
+    render: (j) => sourceCell(j),
+  },
   {
     header: '気になる点',
-    minWidth: 'min-w-[200px] max-w-[240px]',
+    colClass: 'min-w-[200px] max-w-[240px]',
+    getTitle: (j) => j.notes ?? '',
     render: (j) =>
       j.notes ? (
         <span className="line-clamp-4 whitespace-pre-wrap text-xs text-gray-600">
@@ -135,7 +164,7 @@ export default function Compare() {
                 {COLUMNS.map((col) => (
                   <th
                     key={col.header}
-                    className={`px-3 py-2 text-left text-xs font-semibold text-gray-500 border-b border-r border-gray-200 whitespace-nowrap ${col.minWidth ?? 'min-w-[120px]'}`}
+                    className={`px-3 py-2 text-left text-xs font-semibold text-gray-500 border-b border-r border-gray-200 whitespace-nowrap ${col.colClass ?? 'min-w-[120px]'}`}
                   >
                     {col.header}
                   </th>
@@ -163,9 +192,12 @@ export default function Compare() {
                   {COLUMNS.map((col) => (
                     <td
                       key={col.header}
-                      className={`px-3 py-3 border-b border-r border-gray-200 text-sm text-gray-700 align-top ${col.minWidth ?? ''}`}
+                      title={col.getTitle?.(job) || undefined}
+                      className={`px-3 py-3 border-b border-r border-gray-200 text-sm text-gray-700 align-top ${col.colClass ?? ''}`}
                     >
-                      {col.render(job)}
+                      {col.clamp ? (
+                        <div className="line-clamp-4">{col.render(job)}</div>
+                      ) : col.render(job)}
                     </td>
                   ))}
                 </tr>
