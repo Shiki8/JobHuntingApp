@@ -21,16 +21,49 @@ npx vitest run src/lib/jobImport.test.ts
 
 ## 開発ワークフロー
 
-### 新機能
+変更の種別を判断してからフローを選ぶ。
+
+### 種別の判断フロー
+
+```
+意図した仕様（ユーザーが期待する振る舞い）が変わるか？
+  No → コードと仕様が食い違っているか？
+         Yes → バグ修正
+         No  → docsだけ間違っているか？
+                 Yes → docs修正
+                 No  → 仕様に影響しない変更（リファクタリング等）
+  Yes → 実装前に「何を作るか」の選択肢が複数あるか？
+         No  → 機能拡張
+         Yes → 新機能 / 設計変更
+```
+
+### 仕様に影響しない変更
+リファクタリング・パフォーマンス改善・テスト追加・依存更新・外観調整など。
+1. 実装
+2. PR 作成
+
+### バグ修正
+仕様と実装の乖離を直す。`docs/features/` の Behavior と実装が食い違っている状態。
+1. GitHub Issue を起票
+2. 実装
+3. PR 作成
+
+### docs修正
+仕様は正しいが `docs/features/` や `docs/flows/` の記述が間違っている。
+1. `docs:` コミットで該当ファイルを修正
+2. PR 作成
+
+### 機能拡張
+仕様を追加・変更するが「何を作るか」は自明な変更。
+1. 該当する `docs/features/` または `docs/flows/` を更新
+2. 実装
+3. PR 作成
+
+### 新機能 / 設計変更
+設計から始める必要がある変更。ユーザーフローに影響する場合や選択肢が複数ある場合。
 1. `/grill-with-docs` でグリルしながら `docs/flows/` を更新（ユーザー視点）
 2. `docs/features/` に実装詳細・Background を追記
 3. 実装
-4. PR 作成（PRテンプレートのドキュメントチェックリストを確認）
-
-### バグ修正
-1. GitHub Issue を起票
-2. 実装
-3. 関連 `docs/features/` または `docs/flows/` を更新（仕様に影響する場合）
 4. PR 作成
 
 ### コミット規約
@@ -41,6 +74,7 @@ docs: add job-import-flow.md
 docs: update score-input.md with weight=0 behavior
 feat: implement job import normalization
 fix: correct weighted total denominator
+refactor: extract weighted total calculation
 ```
 
 ## ドメイン用語
